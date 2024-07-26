@@ -19,19 +19,18 @@ class ToDoListController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
-        //
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:30']
+        ]);
+
+        $data['user_id'] = 1; // TODO: replace with current user's id
+        $toDoList = ToDoList::create($data);
+
+        return response()->json($toDoList, Response::HTTP_CREATED);
     }
 
     /**
@@ -45,19 +44,20 @@ class ToDoListController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ToDoList $toDoList)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ToDoList $toDoList)
+    public function update(Request $request, string $id): Response
     {
-        //
+        $toDoList = ToDoList::findOrFail($id);
+
+        $data = $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'title' => ['required', 'string', 'max:30'],
+        ]);
+
+        $toDoList->update($data);
+
+        return response()->json($toDoList, Response::HTTP_OK);
     }
 
     /**
