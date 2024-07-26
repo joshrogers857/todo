@@ -16,6 +16,10 @@ class ToDoItem extends Model
         'is_complete',
     ];
 
+    protected $casts = [
+        'is_complete' => 'boolean',
+    ];
+
     public function list(): BelongsTo
     {
         return $this->belongsTo(ToDoList::class);

@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ToDoListController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
-        //
+        $toDoLists = ToDoList::all();
+
+        return response()->json($toDoLists, Response::HTTP_OK);
     }
 
     /**
@@ -34,9 +37,11 @@ class ToDoListController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ToDoList $toDoList)
+    public function show(string $id): Response
     {
-        //
+        $item = ToDoList::with('items')->findOrFail($id);
+
+        return response()->json($item, Response::HTTP_OK);
     }
 
     /**
@@ -58,8 +63,10 @@ class ToDoListController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ToDoList $toDoList)
+    public function destroy(string $id): Response
     {
-        //
+        $result = ToDoList::destroy($id);
+
+        return response()->json($result, Response::HTTP_NO_CONTENT);
     }
 }
